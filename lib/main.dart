@@ -1,23 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
-void main(){
-	runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-	const MyApp({super.key});
-
-	@override
-	Widget build(BuildContext context) {
-    return MaterialApp(
-		debugShowCheckedModeBanner: false,
-    	home: Home(),
-		); // MaterialApp
-	}
+void main() {
+  runApp(MaterialApp(home: Home(), debugShowCheckedModeBanner: false));
 }
 
 class Home extends StatefulWidget {
 	const Home({super.key});
+	
 	@override
 	State<Home> createState() => _HomeState();
 }
@@ -28,6 +18,7 @@ class _HomeState extends State<Home> {
 	TextEditingController alturaController = TextEditingController();
 	// variável para o resultado da informação do IMC
 	String _infoText = 'Informe seus dados. ';
+	
 	//função para resetar os campos de texto e a variável de resultado
 	void _resetFields(){
 		pesoController.text = '';
@@ -36,51 +27,95 @@ class _HomeState extends State<Home> {
 			_infoText = 'Informe seus dados. ';
 		});
 	}
+	
+	void _calculate() {
+    setState(() {
+		double peso = double.parse(pesoController.text);
+		double altura = double.parse(alturaController.text) / 100;
+		double imc = peso / (altura * altura);
+		if (imc < 18.6) {
+			_infoText = 'Abaixo do peso (${imc.toStringAsPrecision(4)})';
+		} else if (imc >= 18.6 && imc < 24.9) {
+			_infoText = 'Peso ideal (${imc.toStringAsPrecision(4)})';
+		} else if (imc >= 24.9 && imc < 29.9) {
+			_infoText = 'Levemente acima do peso (${imc.toStringAsPrecision(4)})';
+		} else if (imc >= 29.9 && imc < 34.9) {
+			_infoText = 'Obesidade grau I (${imc.toStringAsPrecision(4)})';
+		} else if (imc >= 34.9 && imc < 39.9) {
+			_infoText = 'Obesidade grau II (${imc.toStringAsPrecision(4)})';
+		} else if (imc >= 40) {
+			_infoText = 'Obesidade grau III (${imc.toStringAsPrecision(4)})';
+		}
+		});
+	}
+	
 	@override
 	Widget build(BuildContext context) {
-	return Scaffold(
-		appBar: AppBar(
-			title: Text(
-        		'Calculadora de IMC',
-        		style: TextStyle(
-					fontSize: 30,
-					backgroundColor: const Color(0x109940FF),
-					color: Colors.white,
-					fontWeight: FontWeight.bold),
-					textAlign: TextAlign.center,
-        	), // Text
-        	centerTitle: true,
-			actions: [
-				IconButton(
-					onPressed: (){},
-					icon: Icon(
-						Icons.refresh,
+		
+		return Scaffold(
+			// opções de menu superior
+			drawer: Drawer (
+				child: ListView(
+				children:[
+					DrawerHeader( 
+					decoration: BoxDecoration(
+						color: Colors.green,
+					),
+					child: Text(
+						'Menu',
+						style: TextStyle(
 						color: Colors.white,
-					), // icon
-				), // IconButton
-			], // actions
-		), // AppBar
-		backgroundColor: Colors.white,
-		body: SingleChildScrollView(
-			padding: EdgeInsets.fromLTRB(10,0,10,0),
-			child: Column(
-				crossAxisAlignment: CrossAxisAlignment.stretch,
-				children: [
-					Icon(
-						Icons.person_outline,
-						size: 120,
-						color: Colors.green
+						fontSize: 24,
+						), // TextStyle
+					), //BoxDecoration
+					), // DrawerHeader
+					ListTile(title: Text('Calculo IMC'), onTap: () {}),
+					ListTile(title: Text('Sobre'), onTap: () {}),
+				] // children
+				) // ListView
+			), // Drawer
+			appBar: AppBar(
+				title: Text(
+					'Calculadora de IMC',
+					style: TextStyle(
+						fontSize: 30,
+						color: Colors.white,
+						fontWeight: FontWeight.bold,
+						textAlign: TextAlign.center,
+				), // Text
+				backgroundColor: const Color(0xFF109940),
+				centerTitle: true,
+				actions: [
+					IconButton(
+						onPressed: _resetFields,
+						icon: Icon(
+							Icons.refresh,
+							color: Colors.white,
+						), // icon
+					), // IconButton
+				], // actions
+			), // AppBar
+			backgroundColor: Colors.white,
+			body: SingleChildScrollView(
+				padding: EdgeInsets.fromLTRB(10,0,10,0),
+				child: Column(
+					crossAxisAlignment: CrossAxisAlignment.stretch,
+					children: [
+						Icon(
+							Icons.person_outline,
+							size: 120,
+							color: Colors.green
 						), // Icons
 						SizedBox(
 							height: 20,
 						), //SizedBox
-					TextField(
+						TextField(
 						keyboardType: TextInputType.number,
 						textAlign: TextAlign.center,
 						style: TextStyle(
 							color: Colors.green,
 							fontSize: 25
-							),
+							), // TextStyle
 						// decoração do campo de texto
 						decoration: InputDecoration(
 							labelText: 'Peso (kg)',
@@ -91,19 +126,19 @@ class _HomeState extends State<Home> {
 						SizedBox(
 							height: 20,
 						), //SizedBox
-					TextField(
-						keyboardType: TextInputType.number,
-						textAlign: TextAlign.center,
-						style: TextStyle(
-							color: Colors.green,
-							fontSize: 25
-							),
-						// decoração do campo de texto
-						decoration: InputDecoration(
-							labelText: 'Altura (cm)',
-							labelStyle: TextStyle(color: Colors.green),
-							),
-						controller: alturaController,
+						TextField(
+							keyboardType: TextInputType.number,
+							textAlign: TextAlign.center,
+							style: TextStyle(
+								color: Colors.green,
+								fontSize: 25
+								),
+							// decoração do campo de texto
+							decoration: InputDecoration(
+								labelText: 'Altura (cm)',
+								labelStyle: TextStyle(color: Colors.green),
+								),
+							controller: alturaController,
 						), // TextField
 						SizedBox(
 							height: 20,
@@ -113,14 +148,16 @@ class _HomeState extends State<Home> {
 							child: SizedBox(
 								height: 50,
 								child: ElevatedButton(
-									onPressed: () {},
+									onPressed: _calculate,
 									//ignore: sort_child_prperies_last
 									child: Text(
-										'Calcular', style: TextStyle(
+										'Calcular',
+										style: TextStyle(
 											color: Colors.white,
-											fontSize: 25
-											),
-										),
+											fontSize: 25,
+											), // TextStyle
+										), // Style
+										style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF109940),),// Cor de fundo verde
 								), // ElevatedButton
 							), //SizedBox
 						), // Padding
@@ -128,16 +165,37 @@ class _HomeState extends State<Home> {
 							height: 20,
 						), // SizedBox
 						Text(
-							'Informe seus dados.',
+							_infoText,
 							textAlign: TextAlign.center,
 							style: TextStyle(
 								color: Colors.green,
 								fontSize: 25
-							),
+							), // style: TextStyle
 						), // Text
-					], // children
-				), // Column
-			), //SingleChildScrollView
-		); // Scaffold
-	} // build
+						Row(
+							mainAxisAlignment: MainAxisAlignment.center,
+							children: <Widget>[
+								const SizedBox(width: 20.0, height: 100.0),
+								const Text('Sou', style: TextStyle(fontSize: 43.0, color: Colors.green)),
+								const SizedBox(width: 20.0, height: 100.0),
+								DefaultTextStyle(
+									style: const TextStyle(fontSize: 40.0, fontFamily: 'Horizon', color: Colors.green),
+									child: AnimatedTextKit(
+										animatedTexts: [
+											RotateAnimatedText('LINDO'),
+											RotateAnimatedText('MARAVILHOSO'),
+											RotateAnimatedText('DIFERENTE'),
+										], // animatedTexts
+										onTap: () {
+											print("Tap Event");
+										}, // onTap
+									), // AnimatedTextKit
+								), // DefaultTextStyle child
+							], // children: <widget>[
+						), // Row
+					], // children[
+				),// child: Column(
+		), // SingleChildScrollView
+	 ); // return Scaffold(
+}// build (){
 } // _HomeState
