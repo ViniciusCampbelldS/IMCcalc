@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'sobre.dart';
 
 void main() {
   runApp(MaterialApp(home: Home(), debugShowCheckedModeBanner: false));
+  
 }
 
 class Home extends StatefulWidget {
@@ -56,46 +58,30 @@ class _HomeState extends State<Home> {
 			// opções de menu superior
 			drawer: Drawer (
 				child: ListView(
-				children:[
-					DrawerHeader( 
-					decoration: BoxDecoration(
-						color: Colors.green,
-					),
-					child: Text(
-						'Menu',
-						style: TextStyle(
-						color: Colors.white,
-						fontSize: 24,
-						), // TextStyle
-					), //BoxDecoration
-					), // DrawerHeader
-					ListTile(title: Text('Calculo IMC'), onTap: () {}),
-					ListTile(title: Text('Sobre'), onTap: () {}),
-				] // children
+					children:[
+						DrawerHeader(
+							decoration: BoxDecoration(
+								color: Colors.green,
+							),
+							child: Text(
+								'Menu',
+								style: TextStyle(
+								color: Colors.white,
+								fontSize: 24,
+								), // TextStyle
+							), // Text
+							), // DrawerHeader
+							ListTile(title: Text('Calculo IMC'), onTap: () {}),
+							ListTile(title: Text('Sobre'), onTap: () {
+								Navigator.push( 
+									context,
+									MaterialPageRoute(builder: (context) => const Sobre()),
+								); // Navigator.push
+							} // ListTitle
+						), // ListTitle
+					] // children
 				) // ListView
 			), // Drawer
-			appBar: AppBar(
-				title: Text(
-					'Calculadora de IMC',
-					style: TextStyle(
-						fontSize: 30,
-						color: Colors.white,
-						fontWeight: FontWeight.bold,
-						textAlign: TextAlign.center,
-				), // Text
-				backgroundColor: const Color(0xFF109940),
-				centerTitle: true,
-				actions: [
-					IconButton(
-						onPressed: _resetFields,
-						icon: Icon(
-							Icons.refresh,
-							color: Colors.white,
-						), // icon
-					), // IconButton
-				], // actions
-			), // AppBar
-			backgroundColor: Colors.white,
 			body: SingleChildScrollView(
 				padding: EdgeInsets.fromLTRB(10,0,10,0),
 				child: Column(
@@ -190,12 +176,35 @@ class _HomeState extends State<Home> {
 											print("Tap Event");
 										}, // onTap
 									), // AnimatedTextKit
-								), // DefaultTextStyle child
+								), // DefaultTextStyle
 							], // children: <widget>[
 						), // Row
 					], // children[
 				),// child: Column(
-		), // SingleChildScrollView
-	 ); // return Scaffold(
-}// build (){
+			),// body: SingleChildScrollView(
+			appBar: AppBar(
+				centerTitle: true,
+				title: Text(
+					'Calculadora de IMC',
+					textAlign: TextAlign.center,
+					style: TextStyle(
+						fontSize: 30,
+						color: Colors.white,
+						backgroundColor: const Color(0xFF109940),
+						fontWeight: FontWeight.bold,
+					), // TextStyle
+				), // Text
+				actions: [
+					IconButton(
+						onPressed: _resetFields,
+						icon: Icon(
+							Icons.refresh,
+							color: Colors.white,
+						), // icon
+					), // IconButton
+				], // actions
+				backgroundColor: Colors.white,
+			), // AppBar
+		); // return Scaffold(
+	}// build (){
 } // _HomeState
