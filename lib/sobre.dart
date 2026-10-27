@@ -5,8 +5,8 @@ objetivo do  app*/
 
 import 'package:flutter/material.dart';
 
-class Sobre extends StatelessWidget {
-  const Sobre ({super.key});
+class SobrePage extends StatelessWidget {
+  const SobrePage ({super.key});
 
   @override
   Widget build(BuildContext context) {
